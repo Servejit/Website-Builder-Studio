@@ -4,12 +4,14 @@ A Streamlit app that turns a product name and brand name into a responsive, stan
 
 ## Features
 
-- Required inputs: product name and brand name.
+- Required product name and brand name.
 - Optional company name, email, phone, WhatsApp, address and social links.
 - Upload 3–5 product images; images are embedded in the downloaded HTML.
 - If no image is uploaded, designed placeholders are added to the gallery.
 - Automatically generated product story, benefits, customer fit, buying reasons, FAQ, contact and legal starter sections.
-- Three themes: Midnight Luxe, Executive Blue and Modern Botanical. The exported page randomly changes theme on each page load while keeping its content and images unchanged.
+- One consistent professional, mobile-responsive website design.
+- Custom website background and brand accent colour pickers.
+- Text, muted text, card and button contrast colours are selected automatically from the chosen colours for readability.
 - Download as one standalone HTML file.
 - No paid AI API or API key required.
 
