@@ -108,21 +108,26 @@ def slug(value):
 
 
 def make_svg_placeholder(product, brand, number):
-    title = html.escape(product[:28])
-    brand_text = html.escape(brand[:30])
-    palettes = [("#182333", "#d6b36a"), ("#e9eef5", "#2459a6"), ("#e9eee6", "#34745b")]
-    bg, accent = palettes[(number - 1) % len(palettes)]
+    title = html.escape(product[:30])
+    brand_text = html.escape(brand[:32])
+    backgrounds = [("#EAF0F6", "#315477"), ("#F1ECE5", "#8B6546"), ("#E9EFEA", "#456B58")]
+    bg, accent = backgrounds[(number - 1) % len(backgrounds)]
     svg = f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 650">
-    <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="{bg}"/><stop offset="1" stop-color="{accent}" stop-opacity=".28"/></linearGradient></defs>
-    <rect width="900" height="650" fill="url(#g)"/>
-    <circle cx="450" cy="275" r="145" fill="none" stroke="{accent}" stroke-width="3" opacity=".8"/>
-    <circle cx="450" cy="275" r="115" fill="none" stroke="{accent}" stroke-width="1" opacity=".5"/>
-    <path d="M450 165 L450 275 L520 315" fill="none" stroke="{accent}" stroke-width="7" stroke-linecap="round"/>
-    <text x="450" y="500" text-anchor="middle" font-family="Arial" font-size="46" fill="{accent}">{title}</text>
-    <text x="450" y="550" text-anchor="middle" font-family="Arial" font-size="22" fill="{accent}" opacity=".8">{brand_text} · PRODUCT VISUAL</text>
+    <defs>
+      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="{bg}"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient>
+      <linearGradient id="shape" x1="0" y1="0" x2="1" y2="1"><stop stop-color="{accent}" stop-opacity=".92"/><stop offset="1" stop-color="{accent}" stop-opacity=".48"/></linearGradient>
+    </defs>
+    <rect width="900" height="650" fill="url(#bg)"/>
+    <circle cx="720" cy="110" r="190" fill="{accent}" opacity=".07"/>
+    <circle cx="160" cy="560" r="210" fill="{accent}" opacity=".06"/>
+    <rect x="280" y="135" width="340" height="300" rx="34" fill="url(#shape)" opacity=".14"/>
+    <path d="M330 390 L450 205 L570 390 Z" fill="url(#shape)" opacity=".82"/>
+    <rect x="345" y="410" width="210" height="13" rx="7" fill="{accent}" opacity=".3"/>
+    <text x="450" y="505" text-anchor="middle" font-family="Arial,sans-serif" font-size="42" font-weight="700" fill="{accent}">{title}</text>
+    <text x="450" y="548" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" letter-spacing="3" fill="{accent}" opacity=".8">{brand_text}</text>
+    <text x="450" y="585" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" letter-spacing="4" fill="{accent}" opacity=".65">PRODUCT IMAGE PLACEHOLDER</text>
     </svg>"""
     return "data:image/svg+xml;base64," + base64.b64encode(svg.encode()).decode()
-
 
 def image_to_data_url(upload):
     raw = upload.getvalue()
@@ -186,7 +191,7 @@ def make_html(product, brand, company, email, phone, address, whatsapp, instagra
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="{clean(c['subhero'])}">
-<meta name="theme-color" content="#0c1018">
+<meta name="theme-color" content="{palette["bg"]}">
 <title>{b} | {p}</title>
 <style>
 :root{{--bg:{palette["bg"]};--surface:{palette["surface"]};--text:{palette["text"]};--muted:{palette["muted"]};--accent:{palette["accent"]};--accentText:{palette["accent_text"]};--line:{palette["line"]};--shadow:0 24px 70px rgba(18,32,51,.10);--radius:22px}}
