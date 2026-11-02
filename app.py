@@ -170,30 +170,30 @@ def make_html(product, brand, company, email, phone, address, whatsapp, instagra
 :root{{--bg:#0c1018;--surface:#151c28;--text:#f7f4ed;--muted:#aab3c2;--accent:#d6b36a;--accentText:#17130b;--line:#2c3544;--shadow:0 22px 70px rgba(0,0,0,.12)}}
 *{{box-sizing:border-box}}html{{scroll-behavior:smooth}}body{{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.65}}a{{color:inherit;text-decoration:none}}.wrap{{width:min(1160px,calc(100% - 42px));margin:auto}}.topbar{{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}}nav{{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:22px}}.logo{{font-weight:850;letter-spacing:.08em;font-size:20px}}.logo span{{color:var(--accent)}}.navlinks{{display:flex;gap:22px;align-items:center;font-size:13px;color:var(--muted)}}.navlinks a:hover{{color:var(--accent)}}.button{{display:inline-flex;align-items:center;justify-content:center;padding:13px 21px;border-radius:999px;background:var(--accent);color:var(--accentText);font-weight:750;font-size:13px;border:1px solid var(--accent);transition:.2s}}.button:hover{{transform:translateY(-2px);filter:brightness(1.08)}}.button-outline{{background:transparent;color:var(--text);border-color:var(--line)}}.hero{{padding:100px 0 85px;display:grid;grid-template-columns:1.05fr .95fr;gap:55px;align-items:center}}.eyebrow{{text-transform:uppercase;letter-spacing:.2em;font-size:11px;font-weight:800;color:var(--accent)}}h1{{font-size:clamp(42px,6vw,76px);line-height:1.04;letter-spacing:-.055em;margin:20px 0}}h2{{font-size:clamp(30px,4vw,48px);line-height:1.12;letter-spacing:-.04em;margin:12px 0 18px}}h3{{line-height:1.25}}.lead{{font-size:18px;color:var(--muted);max-width:590px}}.hero-actions{{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}}.hero-image{{min-height:420px;border-radius:28px;overflow:hidden;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow)}}.hero-image img{{width:100%;height:100%;min-height:420px;object-fit:cover;display:block}}section{{padding:88px 0;border-top:1px solid var(--line)}}.section-head{{max-width:720px;margin-bottom:38px}}.section-head p,.body-copy{{color:var(--muted);font-size:16px}}.split{{display:grid;grid-template-columns:1fr 1fr;gap:55px;align-items:center}}.quote-panel{{padding:35px;border:1px solid var(--line);border-radius:24px;background:var(--surface);font-size:clamp(22px,3vw,32px);line-height:1.3}}.cards{{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}}.info-card{{padding:25px;border:1px solid var(--line);border-radius:20px;background:var(--surface)}}.number{{font-size:12px;color:var(--accent);font-weight:800;letter-spacing:.15em}}.info-card h3{{font-size:18px}}.info-card p{{font-size:13px;color:var(--muted)}}.gallery{{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}}.gallery-card{{margin:0;border-radius:20px;overflow:hidden;border:1px solid var(--line);background:var(--surface)}}.gallery-card img{{display:block;width:100%;height:280px;object-fit:cover}}.gallery-card figcaption{{padding:14px 16px;color:var(--muted);font-size:13px}}.fit-panel{{padding:34px;border-radius:24px;background:var(--surface);border:1px solid var(--line)}}.reasons{{padding-left:22px;color:var(--muted)}}.reasons li{{padding:8px 0}}.faq details{{padding:18px 0;border-bottom:1px solid var(--line)}}.faq summary{{cursor:pointer;font-weight:700}}.faq p{{color:var(--muted)}}.contact-grid{{display:grid;grid-template-columns:.85fr 1.15fr;gap:35px}}.contact-panel{{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:28px}}.contact-panel a{{color:var(--accent);overflow-wrap:anywhere}}label{{display:block;font-size:12px;font-weight:700;margin:12px 0 6px}}input,textarea{{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--text);font:inherit}}textarea{{min-height:125px;resize:vertical}}.form-note{{font-size:12px;color:var(--muted)}}footer{{padding:38px 0;border-top:1px solid var(--line);color:var(--muted);font-size:13px}}.footer-inner{{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}}.footer-links{{display:flex;gap:16px;flex-wrap:wrap}}.theme-label{{position:fixed;right:14px;bottom:14px;background:var(--surface);border:1px solid var(--line);color:var(--muted);padding:8px 12px;border-radius:99px;font-size:11px;z-index:20;opacity:.8}}
 /* Three distinct page compositions */
-body.design-luxe .hero{grid-template-columns:1fr 1fr;gap:28px;padding-top:72px}
-body.design-luxe .hero-image{border-radius:4px 90px 4px 90px;min-height:510px}
-body.design-luxe .hero-image img{min-height:510px}
-body.design-luxe .topbar{border-bottom:2px solid var(--accent)}
-body.design-luxe .logo{letter-spacing:.18em;text-transform:uppercase}
-body.design-luxe .info-card,body.design-luxe .gallery-card{border-radius:4px 24px 4px 24px}
-body.design-blue .hero{grid-template-columns:.9fr 1.1fr;padding:70px 0 95px}
-body.design-blue .hero-image{order:2;border-radius:34px;box-shadow:0 25px 65px rgba(36,89,166,.18)}
-body.design-blue .button{border-radius:12px}
-body.design-blue .info-card{border-radius:14px;box-shadow:0 12px 32px rgba(20,36,58,.07)}
-body.design-blue section{border-top:0}
-body.design-blue .section-head{border-left:5px solid var(--accent);padding-left:20px}
-body.design-botanical .hero{display:flex;flex-direction:column;text-align:center;gap:34px;padding:82px 0 76px}
-body.design-botanical .hero>div:first-child{max-width:820px}
-body.design-botanical .hero .lead{margin-left:auto;margin-right:auto}
-body.design-botanical .hero-actions{justify-content:center}
-body.design-botanical .hero-image{width:100%;max-width:900px;min-height:380px;border-radius:180px 180px 28px 28px}
-body.design-botanical .hero-image img{min-height:380px}
-body.design-botanical .button{border-radius:12px 28px 12px 28px}
-body.design-botanical .info-card,body.design-botanical .gallery-card{border-radius:28px 8px 28px 8px}
-body.design-botanical .quote-panel,body.design-botanical .fit-panel{border-radius:48px 12px 48px 12px}
-@media(max-width:850px){body.design-luxe .hero,body.design-blue .hero{grid-template-columns:1fr}body.design-blue .hero-image{order:0}body.design-botanical .hero-image{min-height:280px;border-radius:100px 100px 20px 20px}body.design-botanical .hero-image img{min-height:280px}}
-@media(max-width:850px){{.hero,.split,.contact-grid{{grid-template-columns:1fr}}.hero{{padding:65px 0}}.hero-image,.hero-image img{{min-height:310px}}.cards{{grid-template-columns:repeat(2,1fr)}}.gallery{{grid-template-columns:repeat(2,1fr)}}.navlinks{{display:none}}}}
-@media(max-width:520px){{.wrap{{width:min(100% - 28px,1160px)}}section{{padding:62px 0}}.cards,.gallery{{grid-template-columns:1fr}}.gallery-card img{{height:250px}}.hero-actions .button{{width:100%}}}}
+body.design-luxe .hero{{grid-template-columns:1fr 1fr;gap:28px;padding-top:72px}}
+body.design-luxe .hero-image{{border-radius:4px 90px 4px 90px;min-height:510px}}
+body.design-luxe .hero-image img{{min-height:510px}}
+body.design-luxe .topbar{{border-bottom:2px solid var(--accent)}}
+body.design-luxe .logo{{letter-spacing:.18em;text-transform:uppercase}}
+body.design-luxe .info-card,body.design-luxe .gallery-card{{border-radius:4px 24px 4px 24px}}
+body.design-blue .hero{{grid-template-columns:.9fr 1.1fr;padding:70px 0 95px}}
+body.design-blue .hero-image{{order:2;border-radius:34px;box-shadow:0 25px 65px rgba(36,89,166,.18)}}
+body.design-blue .button{{border-radius:12px}}
+body.design-blue .info-card{{border-radius:14px;box-shadow:0 12px 32px rgba(20,36,58,.07)}}
+body.design-blue section{{border-top:0}}
+body.design-blue .section-head{{border-left:5px solid var(--accent);padding-left:20px}}
+body.design-botanical .hero{{display:flex;flex-direction:column;text-align:center;gap:34px;padding:82px 0 76px}}
+body.design-botanical .hero>div:first-child{{max-width:820px}}
+body.design-botanical .hero .lead{{margin-left:auto;margin-right:auto}}
+body.design-botanical .hero-actions{{justify-content:center}}
+body.design-botanical .hero-image{{width:100%;max-width:900px;min-height:380px;border-radius:180px 180px 28px 28px}}
+body.design-botanical .hero-image img{{min-height:380px}}
+body.design-botanical .button{{border-radius:12px 28px 12px 28px}}
+body.design-botanical .info-card,body.design-botanical .gallery-card{{border-radius:28px 8px 28px 8px}}
+body.design-botanical .quote-panel,body.design-botanical .fit-panel{{border-radius:48px 12px 48px 12px}}
+@media(max-width:850px){{body.design-luxe .hero,body.design-blue .hero{{grid-template-columns:1fr}}body.design-blue .hero-image{{order:0}}body.design-botanical .hero-image{{min-height:280px;border-radius:100px 100px 20px 20px}}body.design-botanical .hero-image img{{min-height:280px}}}}
+@media(max-width:850px){{{{.hero,.split,.contact-grid{{{{grid-template-columns:1fr}}}}.hero{{{{padding:65px 0}}}}.hero-image,.hero-image img{{{{min-height:310px}}}}.cards{{{{grid-template-columns:repeat(2,1fr)}}}}.gallery{{{{grid-template-columns:repeat(2,1fr)}}}}.navlinks{{{{display:none}}}}}}}}
+@media(max-width:520px){{{{.wrap{{{{width:min(100% - 28px,1160px)}}}}section{{{{padding:62px 0}}}}.cards,.gallery{{{{grid-template-columns:1fr}}}}.gallery-card img{{{{height:250px}}}}.hero-actions .button{{{{width:100%}}}}}}}}
 </style></head>
 <body>
 <header class="topbar"><div class="wrap"><nav><a class="logo" href="#home">{b}<span>.</span></a><div class="navlinks"><a href="#story">Our Story</a><a href="#benefits">Benefits</a><a href="#gallery">Gallery</a><a href="#faq">FAQ</a><a href="#contact">Contact</a></div><a class="button" href="#contact">Make an Enquiry</a></nav></div></header>
