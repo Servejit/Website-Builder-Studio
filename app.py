@@ -1,7 +1,6 @@
 import base64
 import html
 import json
-import random
 import re
 from datetime import datetime
 from io import BytesIO
@@ -72,11 +71,33 @@ DEFAULT_CONTENT = {
 }
 
 THEMES = {
-    "theme-1": {"name": "Midnight Luxe", "bg": "#0c1018", "surface": "#151c28", "text": "#f7f4ed", "muted": "#aab3c2", "accent": "#d6b36a", "accent_text": "#17130b", "line": "#2c3544"},
-    "theme-2": {"name": "Executive Blue", "bg": "#f4f7fb", "surface": "#ffffff", "text": "#14243a", "muted": "#63748a", "accent": "#2459a6", "accent_text": "#ffffff", "line": "#dce4ef"},
-    "theme-3": {"name": "Modern Botanical", "bg": "#f4f5ed", "surface": "#ffffff", "text": "#1c332b", "muted": "#687c70", "accent": "#34745b", "accent_text": "#ffffff", "line": "#dce5dc"},
 }
 
+
+
+def readable_text_color(hex_color):
+    """Choose near-black or white text with strong contrast for a hex background."""
+    value = hex_color.lstrip("#")
+    if len(value) != 6:
+        return "#172033"
+    channels = [int(value[i:i + 2], 16) / 255 for i in (0, 2, 4)]
+    linear = [v / 12.92 if v <= 0.04045 else ((v + 0.055) / 1.055) ** 2.4 for v in channels]
+    luminance = 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
+    return "#142033" if luminance > 0.42 else "#FFFFFF"
+
+
+def make_palette(background, accent):
+    text_color = readable_text_color(background)
+    is_light = text_color != "#FFFFFF"
+    return {
+        "bg": background,
+        "surface": "#FFFFFF" if is_light else "#172235",
+        "text": text_color,
+        "muted": "#526174" if is_light else "#C1CAD6",
+        "accent": accent,
+        "accent_text": readable_text_color(accent),
+        "line": "#DCE3EB" if is_light else "#35445A",
+    }
 
 def clean(value):
     return html.escape(str(value or "").strip())
@@ -133,7 +154,7 @@ def build_copy(product, brand, company):
     }
 
 
-def make_html(product, brand, company, email, phone, address, whatsapp, instagram, facebook, images):
+def make_html(product, brand, company, email, phone, address, whatsapp, instagram, facebook, images, background_color, accent_color):
     p, b = clean(product), clean(brand)
     c = build_copy(product, brand, company)
     gallery = "".join(
@@ -159,6 +180,7 @@ def make_html(product, brand, company, email, phone, address, whatsapp, instagra
     wa_button = f'<a class="button button-outline" href="{wa_link}" target="_blank" rel="noopener">Chat on WhatsApp</a>' if wa_link else ""
     safe_company = c["company"]
     year = datetime.now().year
+    palette = make_palette(background_color, accent_color)
     # The form uses the visitor's email application. A real inbox submission service
     # can be connected later without changing the generated page layout.
     return f"""<!DOCTYPE html>
@@ -167,33 +189,64 @@ def make_html(product, brand, company, email, phone, address, whatsapp, instagra
 <meta name="theme-color" content="#0c1018">
 <title>{b} | {p}</title>
 <style>
-:root{{--bg:#0c1018;--surface:#151c28;--text:#f7f4ed;--muted:#aab3c2;--accent:#d6b36a;--accentText:#17130b;--line:#2c3544;--shadow:0 22px 70px rgba(0,0,0,.12)}}
-*{{box-sizing:border-box}}html{{scroll-behavior:smooth}}body{{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.65}}a{{color:inherit;text-decoration:none}}.wrap{{width:min(1160px,calc(100% - 42px));margin:auto}}.topbar{{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}}nav{{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:22px}}.logo{{font-weight:850;letter-spacing:.08em;font-size:20px}}.logo span{{color:var(--accent)}}.navlinks{{display:flex;gap:22px;align-items:center;font-size:13px;color:var(--muted)}}.navlinks a:hover{{color:var(--accent)}}.button{{display:inline-flex;align-items:center;justify-content:center;padding:13px 21px;border-radius:999px;background:var(--accent);color:var(--accentText);font-weight:750;font-size:13px;border:1px solid var(--accent);transition:.2s}}.button:hover{{transform:translateY(-2px);filter:brightness(1.08)}}.button-outline{{background:transparent;color:var(--text);border-color:var(--line)}}.hero{{padding:100px 0 85px;display:grid;grid-template-columns:1.05fr .95fr;gap:55px;align-items:center}}.eyebrow{{text-transform:uppercase;letter-spacing:.2em;font-size:11px;font-weight:800;color:var(--accent)}}h1{{font-size:clamp(42px,6vw,76px);line-height:1.04;letter-spacing:-.055em;margin:20px 0}}h2{{font-size:clamp(30px,4vw,48px);line-height:1.12;letter-spacing:-.04em;margin:12px 0 18px}}h3{{line-height:1.25}}.lead{{font-size:18px;color:var(--muted);max-width:590px}}.hero-actions{{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}}.hero-image{{min-height:420px;border-radius:28px;overflow:hidden;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow)}}.hero-image img{{width:100%;height:100%;min-height:420px;object-fit:cover;display:block}}section{{padding:88px 0;border-top:1px solid var(--line)}}.section-head{{max-width:720px;margin-bottom:38px}}.section-head p,.body-copy{{color:var(--muted);font-size:16px}}.split{{display:grid;grid-template-columns:1fr 1fr;gap:55px;align-items:center}}.quote-panel{{padding:35px;border:1px solid var(--line);border-radius:24px;background:var(--surface);font-size:clamp(22px,3vw,32px);line-height:1.3}}.cards{{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}}.info-card{{padding:25px;border:1px solid var(--line);border-radius:20px;background:var(--surface)}}.number{{font-size:12px;color:var(--accent);font-weight:800;letter-spacing:.15em}}.info-card h3{{font-size:18px}}.info-card p{{font-size:13px;color:var(--muted)}}.gallery{{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}}.gallery-card{{margin:0;border-radius:20px;overflow:hidden;border:1px solid var(--line);background:var(--surface)}}.gallery-card img{{display:block;width:100%;height:280px;object-fit:cover}}.gallery-card figcaption{{padding:14px 16px;color:var(--muted);font-size:13px}}.fit-panel{{padding:34px;border-radius:24px;background:var(--surface);border:1px solid var(--line)}}.reasons{{padding-left:22px;color:var(--muted)}}.reasons li{{padding:8px 0}}.faq details{{padding:18px 0;border-bottom:1px solid var(--line)}}.faq summary{{cursor:pointer;font-weight:700}}.faq p{{color:var(--muted)}}.contact-grid{{display:grid;grid-template-columns:.85fr 1.15fr;gap:35px}}.contact-panel{{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:28px}}.contact-panel a{{color:var(--accent);overflow-wrap:anywhere}}label{{display:block;font-size:12px;font-weight:700;margin:12px 0 6px}}input,textarea{{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--text);font:inherit}}textarea{{min-height:125px;resize:vertical}}.form-note{{font-size:12px;color:var(--muted)}}footer{{padding:38px 0;border-top:1px solid var(--line);color:var(--muted);font-size:13px}}.footer-inner{{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}}.footer-links{{display:flex;gap:16px;flex-wrap:wrap}}.theme-label{{position:fixed;right:14px;bottom:14px;background:var(--surface);border:1px solid var(--line);color:var(--muted);padding:8px 12px;border-radius:99px;font-size:11px;z-index:20;opacity:.8}}
-/* Three distinct page compositions */
-body.design-luxe .hero{{grid-template-columns:1fr 1fr;gap:28px;padding-top:72px}}
-body.design-luxe .hero-image{{border-radius:4px 90px 4px 90px;min-height:510px}}
-body.design-luxe .hero-image img{{min-height:510px}}
-body.design-luxe .topbar{{border-bottom:2px solid var(--accent)}}
-body.design-luxe .logo{{letter-spacing:.18em;text-transform:uppercase}}
-body.design-luxe .info-card,body.design-luxe .gallery-card{{border-radius:4px 24px 4px 24px}}
-body.design-blue .hero{{grid-template-columns:.9fr 1.1fr;padding:70px 0 95px}}
-body.design-blue .hero-image{{order:2;border-radius:34px;box-shadow:0 25px 65px rgba(36,89,166,.18)}}
-body.design-blue .button{{border-radius:12px}}
-body.design-blue .info-card{{border-radius:14px;box-shadow:0 12px 32px rgba(20,36,58,.07)}}
-body.design-blue section{{border-top:0}}
-body.design-blue .section-head{{border-left:5px solid var(--accent);padding-left:20px}}
-body.design-botanical .hero{{display:flex;flex-direction:column;text-align:center;gap:34px;padding:82px 0 76px}}
-body.design-botanical .hero>div:first-child{{max-width:820px}}
-body.design-botanical .hero .lead{{margin-left:auto;margin-right:auto}}
-body.design-botanical .hero-actions{{justify-content:center}}
-body.design-botanical .hero-image{{width:100%;max-width:900px;min-height:380px;border-radius:180px 180px 28px 28px}}
-body.design-botanical .hero-image img{{min-height:380px}}
-body.design-botanical .button{{border-radius:12px 28px 12px 28px}}
-body.design-botanical .info-card,body.design-botanical .gallery-card{{border-radius:28px 8px 28px 8px}}
-body.design-botanical .quote-panel,body.design-botanical .fit-panel{{border-radius:48px 12px 48px 12px}}
-@media(max-width:850px){{body.design-luxe .hero,body.design-blue .hero{{grid-template-columns:1fr}}body.design-blue .hero-image{{order:0}}body.design-botanical .hero-image{{min-height:280px;border-radius:100px 100px 20px 20px}}body.design-botanical .hero-image img{{min-height:280px}}}}
-@media(max-width:850px){{{{.hero,.split,.contact-grid{{{{grid-template-columns:1fr}}}}.hero{{{{padding:65px 0}}}}.hero-image,.hero-image img{{{{min-height:310px}}}}.cards{{{{grid-template-columns:repeat(2,1fr)}}}}.gallery{{{{grid-template-columns:repeat(2,1fr)}}}}.navlinks{{{{display:none}}}}}}}}
-@media(max-width:520px){{{{.wrap{{{{width:min(100% - 28px,1160px)}}}}section{{{{padding:62px 0}}}}.cards,.gallery{{{{grid-template-columns:1fr}}}}.gallery-card img{{{{height:250px}}}}.hero-actions .button{{{{width:100%}}}}}}}}
+:root{{--bg:{palette["bg"]};--surface:{palette["surface"]};--text:{palette["text"]};--muted:{palette["muted"]};--accent:{palette["accent"]};--accentText:{palette["accent_text"]};--line:{palette["line"]};--shadow:0 24px 70px rgba(18,32,51,.10);--radius:22px}}
+*{{box-sizing:border-box}}
+html{{scroll-behavior:smooth;scroll-padding-top:95px}}
+body{{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"Segoe UI",Arial,sans-serif;line-height:1.7;-webkit-font-smoothing:antialiased}}
+a{{color:inherit;text-decoration:none}}
+.wrap{{width:min(1160px,calc(100% - 48px));margin:0 auto}}
+.topbar{{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--line);box-shadow:0 4px 18px rgba(18,32,51,.04)}}
+nav{{min-height:78px;display:flex;align-items:center;justify-content:space-between;gap:24px}}
+.logo{{font-size:22px;font-weight:850;letter-spacing:-.04em;color:var(--text)}}
+.logo span{{color:var(--accent)}}
+.navlinks{{display:flex;gap:26px;align-items:center;color:var(--muted);font-size:13px;font-weight:650}}
+.navlinks a:hover{{color:var(--accent)}}
+.button{{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 22px;border-radius:10px;background:var(--accent);color:var(--accentText);font-size:13px;font-weight:800;border:1px solid var(--accent);transition:transform .18s,box-shadow .18s}}
+.button:hover{{transform:translateY(-2px);box-shadow:0 10px 24px rgba(18,32,51,.14)}}
+.button-outline{{background:transparent;color:var(--text);border-color:var(--line)}}
+.hero{{padding:82px 0 86px;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}}
+.eyebrow{{color:var(--accent);font-size:11px;font-weight:850;letter-spacing:.16em;text-transform:uppercase}}
+h1{{font-size:clamp(42px,5.4vw,68px);line-height:1.07;letter-spacing:-.055em;margin:18px 0 22px;max-width:680px}}
+h2{{font-size:clamp(30px,3.7vw,46px);line-height:1.14;letter-spacing:-.04em;margin:12px 0 18px}}
+h3{{line-height:1.3;margin:12px 0}}
+.lead{{font-size:18px;line-height:1.75;color:var(--muted);max-width:570px}}
+.hero-actions{{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}}
+.hero-image{{height:480px;overflow:hidden;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow)}}
+.hero-image img{{width:100%;height:100%;object-fit:cover;display:block}}
+section{{padding:82px 0;border-top:1px solid var(--line)}}
+.section-head{{max-width:720px;margin-bottom:36px}}
+.section-head p,.body-copy{{color:var(--muted);font-size:16px;line-height:1.8}}
+.split{{display:grid;grid-template-columns:1fr 1fr;gap:54px;align-items:center}}
+.quote-panel,.fit-panel{{padding:34px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow)}}
+.quote-panel{{font-size:clamp(22px,2.7vw,30px);line-height:1.4;font-weight:650}}
+.cards{{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}}
+.info-card{{padding:26px 24px;border:1px solid var(--line);border-radius:16px;background:var(--surface);box-shadow:0 8px 26px rgba(18,32,51,.045)}}
+.number{{color:var(--accent);font-size:12px;font-weight:900;letter-spacing:.14em}}
+.info-card h3{{font-size:17px}}
+.info-card p{{color:var(--muted);font-size:13px;line-height:1.7}}
+.gallery{{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}}
+.gallery-card{{margin:0;overflow:hidden;border:1px solid var(--line);border-radius:16px;background:var(--surface)}}
+.gallery-card img{{display:block;width:100%;height:290px;object-fit:cover}}
+.gallery-card figcaption{{padding:14px 17px;color:var(--muted);font-size:13px;font-weight:650}}
+.reasons{{padding-left:22px;color:var(--muted)}}
+.reasons li{{padding:8px 0}}
+.faq details{{padding:19px 0;border-bottom:1px solid var(--line)}}
+.faq summary{{cursor:pointer;font-weight:750;color:var(--text)}}
+.faq p{{color:var(--muted)}}
+.contact-grid{{display:grid;grid-template-columns:.85fr 1.15fr;gap:24px}}
+.contact-panel{{padding:28px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}}
+.contact-panel a{{color:var(--accent);overflow-wrap:anywhere}}
+label{{display:block;margin:13px 0 6px;font-size:12px;font-weight:750}}
+input,textarea{{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font:inherit;outline:none}}
+input:focus,textarea:focus{{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 16%,transparent)}}
+textarea{{min-height:125px;resize:vertical}}
+.form-note{{color:var(--muted);font-size:12px;line-height:1.65}}
+footer{{padding:34px 0;border-top:1px solid var(--line);color:var(--muted);font-size:13px;background:var(--surface)}}
+.footer-inner{{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}}
+.footer-links{{display:flex;gap:18px;flex-wrap:wrap}}
+@media(max-width:900px){{.hero{{gap:34px}}.cards{{grid-template-columns:repeat(2,1fr)}}.navlinks{{gap:14px}}}}
+@media(max-width:700px){{.wrap{{width:calc(100% - 32px)}}nav{{min-height:68px}}.navlinks{{display:none}}.hero,.split,.contact-grid{{grid-template-columns:1fr}}.hero{{padding:56px 0 62px;gap:30px}}.hero-image{{height:340px}}section{{padding:62px 0}}.gallery{{grid-template-columns:1fr 1fr}}.gallery-card img{{height:230px}}.hero-actions .button{{flex:1}}}}
+@media(max-width:460px){{.cards,.gallery{{grid-template-columns:1fr}}.gallery-card img{{height:260px}}.hero-actions{{flex-direction:column}}.hero-actions .button{{width:100%}}}}
 </style></head>
 <body>
 <header class="topbar"><div class="wrap"><nav><a class="logo" href="#home">{b}<span>.</span></a><div class="navlinks"><a href="#story">Our Story</a><a href="#benefits">Benefits</a><a href="#gallery">Gallery</a><a href="#faq">FAQ</a><a href="#contact">Contact</a></div><a class="button" href="#contact">Make an Enquiry</a></nav></div></header>
@@ -216,21 +269,6 @@ body.design-botanical .quote-panel,body.design-botanical .fit-panel{{border-radi
 <footer><div class="wrap footer-inner"><div><strong>{b}</strong> · © {year} {clean(safe_company)}. All rights reserved.</div><div class="footer-links"><a href="#about">About</a><a href="#contact">Contact</a><a href="#legal">Privacy & Terms</a></div></div></footer>
 <div class="theme-label" id="theme-label">Theme</div>
 <script>
-(function(){{
- const themes={{
- "theme-1":{{bg:"#0c1018",surface:"#151c28",text:"#f7f4ed",muted:"#aab3c2",accent:"#d6b36a",accentText:"#17130b",line:"#2c3544",name:"Midnight Luxe",design:"design-luxe"}},
- "theme-2":{{bg:"#f4f7fb",surface:"#ffffff",text:"#14243a",muted:"#63748a",accent:"#2459a6",accentText:"#ffffff",line:"#dce4ef",name:"Executive Blue",design:"design-blue"}},
- "theme-3":{{bg:"#f4f5ed",surface:"#ffffff",text:"#1c332b",muted:"#687c70",accent:"#34745b",accentText:"#ffffff",line:"#dce5dc",name:"Modern Botanical",design:"design-botanical"}}
- }};
- const keys=Object.keys(themes);let previous=null;
- try{{previous=localStorage.getItem("website-builder-theme")||sessionStorage.getItem("website-builder-theme");}}catch(e){{}}
- let choices=keys.filter(k=>k!==previous);if(!choices.length)choices=keys;
- const selected=choices[Math.floor(Math.random()*choices.length)],t=themes[selected],root=document.documentElement;
- for(const [key,value] of Object.entries({{bg:t.bg,surface:t.surface,text:t.text,muted:t.muted,accent:t.accent,accentText:t.accentText,line:t.line}}))root.style.setProperty("--"+key,value);
- document.body.classList.remove("design-luxe","design-blue","design-botanical");document.body.classList.add(t.design);
- try{{localStorage.setItem("website-builder-theme",selected);sessionStorage.setItem("website-builder-theme",selected);}}catch(e){{}}
- const label=document.getElementById("theme-label");if(label)label.textContent="Design: "+t.name;
-}})();
 document.getElementById("enquiry").addEventListener("submit",function(e){{
  e.preventDefault();
  const form=new FormData(this);
@@ -261,7 +299,7 @@ st.markdown("""
 
 st.markdown('<div class="hero-title">Website Builder Studio ✦</div>', unsafe_allow_html=True)
 st.markdown('<p class="hero-sub">Two names in. A complete product and brand website out.</p>', unsafe_allow_html=True)
-st.caption("Local content engine • Three responsive themes • Standalone HTML export • No paid API required")
+st.caption("Professional responsive design • Custom brand colours • Standalone HTML export • No paid API required")
 
 with st.sidebar:
     st.markdown("## ✦ Studio")
@@ -279,6 +317,9 @@ with st.sidebar:
     facebook = st.text_input("Facebook page URL", placeholder="https://facebook.com/...")
     st.markdown("---")
     st.markdown("### 3 · Product photographs")
+    st.markdown("### 4 · Website colours")
+    background_color = st.color_picker("Website background", "#F5F7FA", help="Text and card colours are selected automatically for readability.")
+    accent_color = st.color_picker("Brand accent colour", "#173B66", help="Used for buttons, links and highlights.")
     uploads = st.file_uploader("Upload 3–5 product images", type=["png", "jpg", "jpeg", "webp"], accept_multiple_files=True, help="Images are embedded into the downloaded HTML so the page can work offline.")
     st.caption("If you do not upload images, the builder inserts designed visual placeholders. Upload real product photos before publishing.")
 
@@ -293,7 +334,7 @@ with left:
     st.markdown('<div class="panel"><b>Only two required fields</b><p class="small-muted">Product tells the builder what you sell. Brand tells it how to present your business. Company and contact details are optional and editable.</p></div>', unsafe_allow_html=True)
     st.write("")
     st.markdown("**Your website will include**")
-    features = ["Hero banner and brand message", "Product importance and lifestyle story", "Benefits, reasons to buy and customer fit", "3–5 image gallery", "About company and FAQ", "Contact details and consumer enquiry form", "Privacy and terms starter sections", "Mobile responsive layout and SEO metadata", "Three colour themes that rotate on refresh"]
+    features = ["Hero banner and brand message", "Product importance and lifestyle story", "Benefits, reasons to buy and customer fit", "3–5 image gallery", "About company and FAQ", "Contact details and consumer enquiry form", "Privacy and terms starter sections", "Mobile responsive layout and SEO metadata", "One consistent professional design with your chosen brand colours"]
     for item in features:
         st.markdown(f"✓ {item}")
     if len(uploads or []) > 5:
@@ -306,7 +347,7 @@ with left:
         while len(selected_images) < 3:
             selected_images.append(make_svg_placeholder(product, brand, len(selected_images) + 1))
         selected_images = selected_images[:5]
-        st.session_state.generated_html = make_html(product, brand, company, email, phone, address, whatsapp, instagram, facebook, selected_images)
+        st.session_state.generated_html = make_html(product, brand, company, email, phone, address, whatsapp, instagram, facebook, selected_images, background_color, accent_color)
         st.session_state.generated_key = f"{product.strip()}|{brand.strip()}"
         st.success("Your website has been generated. Preview it and download the HTML below.")
     if not can_build:
@@ -314,9 +355,9 @@ with left:
 
 with right:
     st.markdown("### What gets generated")
-    st.markdown('<div class="panel"><div style="font-size:2rem;font-weight:800;color:#f4f7fb">Your brand. Your story.</div><p class="small-muted">A polished, responsive product website with a consistent message and a rotating visual identity.</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><span style="padding:7px 12px;border-radius:99px;background:#d6b36a;color:#17130b">Midnight Luxe</span><span style="padding:7px 12px;border-radius:99px;background:#dce8f8;color:#14243a">Executive Blue</span><span style="padding:7px 12px;border-radius:99px;background:#dce9df;color:#1c332b">Botanical</span></div></div>', unsafe_allow_html=True)
+    st.markdown('<div class="panel"><div style="font-size:2rem;font-weight:800;color:#f4f7fb">Your brand. Your story.</div><p class="small-muted">One polished, consistent layout. Choose your own background and brand accent colours; text contrast is calculated automatically.</p></div>', unsafe_allow_html=True)
     st.write("")
-    st.info("The page content stays the same across refreshes. Only its colour theme changes. The downloaded HTML includes all three themes and chooses one when opened.")
+    st.info("The website uses one professional layout. Your selected background and accent colours are applied consistently to the preview and downloaded HTML.")
 
 if st.session_state.generated_html:
     st.divider()
@@ -331,7 +372,7 @@ if st.session_state.generated_html:
         type="primary",
         use_container_width=True,
     )
-    st.caption("The HTML contains embedded uploaded images and all three themes. It does not require Streamlit to run. The contact form uses the visitor's email app; for automatic form delivery, connect a form backend.")
+    st.caption("The HTML contains embedded uploaded images and your selected colour scheme. It does not require Streamlit to run. The contact form uses the visitor's email app; for automatic form delivery, connect a form backend.")
     if st.button("Clear generated website and start again"):
         st.session_state.generated_html = ""
         st.session_state.generated_key = ""
