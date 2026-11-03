@@ -75,11 +75,16 @@ THEMES = {
 }
 
 DESIGN_DIRECTIONS = [
-    {"name":"Editorial / Heritage","style":"editorial","tagline":"A story worth discovering.","hero":"A more considered way to experience {product}.","subhero":"{brand} brings a thoughtful point of view to {product}, with character, detail and meaning.","story":"Every memorable brand begins with a point of view. {brand} sees {product} as more than an item to own: it is part of a personal ritual, a considered choice and a reflection of what matters to you.","quote":"Good design is what you feel, remember and return to.","label":"The art of thoughtful choice"},
-    {"name":"Bold / Avant-Garde","style":"bold","tagline":"Made to make a statement.","hero":"{product}. Without the ordinary.","subhero":"Meet the {brand} perspective: confident, expressive and made for people who set the pace.","story":"The world does not need another ordinary choice. {brand} is for people who bring their own energy to every room, every plan and every possibility. {product} becomes an expression of that attitude.","quote":"Don't blend into the moment. Give it a point of view.","label":"A different kind of confidence"},
-    {"name":"Organic / Human","style":"organic","tagline":"Thoughtfully made for real life.","hero":"Bring more meaning to every day.","subhero":"{brand} celebrates the everyday moments around {product}—the routines, connections and small details that make life your own.","story":"The best things fit naturally into real life. {brand} starts with people: what they value, how they spend their days and the little details that make a difference. That is the spirit behind our approach to {product}.","quote":"A meaningful everyday experience is built from thoughtful little details.","label":"Designed around real life"},
-    {"name":"Luxury / Minimal","style":"luxury","tagline":"Less noise. More intention.","hero":"The quiet confidence of {product}.","subhero":"Discover the understated {brand} approach: clarity, considered details and a refined perspective on the things you choose.","story":"True refinement does not need to compete for attention. It is found in considered decisions, clear purpose and details that feel right. {brand} brings that quieter perspective to {product}.","quote":"When every detail has a purpose, simplicity becomes its own signature.","label":"The signature of simplicity"},
-    {"name":"Future / Digital","style":"future","tagline":"A fresh perspective starts here.","hero":"Rethink what {product} can mean.","subhero":"{brand} looks at {product} through a fresh lens—where useful ideas, modern living and individual expression meet.","story":"New expectations create room for better experiences. {brand} is built around curiosity, practical thinking and the belief that the next chapter of {product} should feel relevant to the way people live now.","quote":"The future belongs to ideas that make a real difference today.","label":"A fresh point of view"},
+    {
+        "name": "Luxury with Comfort",
+        "style": "luxury",
+        "tagline": "Quiet luxury. Everyday comfort.",
+        "hero": "Experience the comfort of {product}.",
+        "subhero": "{brand} brings together refined style, thoughtful details and everyday comfort in {product}.",
+        "story": "Luxury should feel as good as it looks. {brand} brings a calm, refined perspective to {product}, balancing elegant details with the comfort and ease that belong in everyday life.",
+        "quote": "True luxury is feeling comfortable in every detail.",
+        "label": "Refined style. Everyday comfort.",
+    },
 ]
 
 
@@ -400,7 +405,7 @@ footer{{padding:34px 0;border-top:1px solid var(--line);color:var(--muted);font-
 body[data-design="editorial"] .hero{{padding-top:105px;gap:7vw}} body[data-design="editorial"] h1,body[data-design="editorial"] h2{{font-family:Georgia,serif;font-weight:500;letter-spacing:-.045em}} body[data-design="editorial"] .hero-image{{border-radius:2px 110px 2px 2px}} body[data-design="editorial"] .info-card{{border-radius:2px;box-shadow:none}}
 body[data-design="bold"] h1{{font-size:clamp(52px,7vw,92px);font-weight:950;letter-spacing:-.075em;text-transform:uppercase;line-height:.94}} body[data-design="bold"] .hero-image{{border-radius:4px;transform:rotate(1.5deg);box-shadow:18px 18px 0 var(--accent)}} body[data-design="bold"] .button{{border-radius:2px;text-transform:uppercase;letter-spacing:.08em}} body[data-design="bold"] .info-card{{border-radius:4px;border-top:5px solid var(--accent)}}
 body[data-design="organic"] h1,body[data-design="organic"] h2{{font-family:Georgia,serif;font-weight:500}} body[data-design="organic"] .hero-image{{border-radius:48% 48% 18px 18px}} body[data-design="organic"] .quote-panel,body[data-design="organic"] .fit-panel{{border-radius:42px 12px 42px 12px}} body[data-design="organic"] .info-card{{border-radius:26px 8px 26px 8px}}
-body[data-design="luxury"] .hero{{padding-top:125px;padding-bottom:115px}} body[data-design="luxury"] h1{{font-family:Georgia,serif;font-weight:400;letter-spacing:-.055em}} body[data-design="luxury"] .hero-image{{border-radius:0;box-shadow:none}} body[data-design="luxury"] .info-card,body[data-design="luxury"] .quote-panel,body[data-design="luxury"] .fit-panel{{border-radius:0;box-shadow:none}} body[data-design="luxury"] .button{{border-radius:0;letter-spacing:.1em;text-transform:uppercase;font-size:11px}}
+body[data-design="luxury"] .hero{{padding-top:105px;padding-bottom:95px}} body[data-design="luxury"] h1{{font-family:Georgia,serif;font-weight:400;letter-spacing:-.045em;line-height:1.08}} body[data-design="luxury"] h2{{font-family:Georgia,serif;font-weight:500;letter-spacing:-.025em}} body[data-design="luxury"] .hero-image{{border-radius:20px;box-shadow:0 18px 48px rgba(18,32,51,.10)}} body[data-design="luxury"] .info-card,body[data-design="luxury"] .quote-panel,body[data-design="luxury"] .fit-panel{{border-radius:18px;box-shadow:0 10px 32px rgba(18,32,51,.055)}} body[data-design="luxury"] .button{{border-radius:10px;letter-spacing:.055em;text-transform:uppercase;font-size:11px}}
 body[data-design="future"] .hero-image{{border-radius:28px;box-shadow:0 0 0 1px var(--accent),0 24px 70px rgba(18,32,51,.16)}} body[data-design="future"] .info-card{{border-radius:20px;background:linear-gradient(145deg,var(--surface),var(--bg))}} body[data-design="future"] .button{{border-radius:999px}} body[data-design="future"] .quote-panel,body[data-design="future"] .fit-panel{{border-radius:28px}}
 @media(max-width:700px){{body[data-design] .hero{{grid-template-columns:1fr;padding-top:55px}}body[data-design="bold"] h1{{font-size:clamp(44px,13vw,68px)}}body[data-design="bold"] .hero-image{{transform:none}}}}
 </style></head>
@@ -454,7 +459,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="hero-title">Website Builder Studio ✦</div>', unsafe_allow_html=True)
-st.markdown('<p class="hero-sub">Two words in. A fresh brand identity, story and website direction every time.</p>', unsafe_allow_html=True)
+st.markdown('<p class="hero-sub">Two words in. A fresh brand identity and story, presented in Luxury with Comfort.</p>', unsafe_allow_html=True)
 st.caption("Professional responsive design • Custom brand colours • Standalone HTML export • No paid API required")
 
 with st.sidebar:
@@ -492,7 +497,7 @@ with left:
     st.markdown('<div class="panel"><b>Only two required fields</b><p class="small-muted">Product tells the builder what you sell. Brand tells it how to present your business. Company and contact details are optional and editable.</p></div>', unsafe_allow_html=True)
     st.write("")
     st.markdown("**Your website will include**")
-    features = ["Hero banner and brand message", "Product importance and lifestyle story", "Benefits, reasons to buy and customer fit", "3–5 image gallery", "About company and FAQ", "Contact details and consumer enquiry form", "Privacy and terms starter sections", "Mobile responsive layout and SEO metadata", "A rotating creative direction: editorial, bold, organic, luxury or future-inspired"]
+    features = ["Hero banner and brand message", "Product importance and lifestyle story", "Benefits, reasons to buy and customer fit", "3–5 image gallery", "About company and FAQ", "Contact details and consumer enquiry form", "Privacy and terms starter sections", "Mobile responsive layout and SEO metadata", "A consistent Luxury with Comfort design with refined typography, soft shapes and calm spacing"]
     for item in features:
         st.markdown(f"✓ {item}")
     if len(uploads or []) > 5:
@@ -505,11 +510,11 @@ with left:
         while len(selected_images) < 3:
             selected_images.append(make_svg_placeholder(product, brand, len(selected_images) + 1))
         selected_images = selected_images[:5]
-        direction = DESIGN_DIRECTIONS[st.session_state.generation_count % len(DESIGN_DIRECTIONS)]
+        direction = DESIGN_DIRECTIONS[0]
         st.session_state.generation_count += 1
         st.session_state.generated_html = make_html(product, brand, company, email, phone, address, whatsapp, instagram, facebook, selected_images, background_color, accent_color, direction)
         st.session_state.generated_key = f"{product.strip()}|{brand.strip()} · {direction['name']}"
-        st.success(f"Fresh creative direction generated: {direction['name']}. Generate again for a different impression.")
+        st.success(f"Your {direction['name']} website is ready. New names create fresh brand content while the design stays consistent.")
     if not can_build:
         st.caption("Enter both names and upload no more than five images to generate.")
 
@@ -517,7 +522,7 @@ with right:
     st.markdown("### What gets generated")
     st.markdown('<div class="panel"><div style="font-size:2rem;font-weight:800;color:#f4f7fb">Your brand. Your story.</div><p class="small-muted">One polished, consistent layout. Choose your own background and brand accent colours; text contrast is calculated automatically.</p></div>', unsafe_allow_html=True)
     st.write("")
-    st.info("Every generation rotates through five distinct design directions. Story angle, typography, shapes, spacing and layout treatment change while your chosen colours and uploaded images are retained.")
+    st.info("Every website keeps the Luxury with Comfort design: elegant typography, soft rounded details, balanced spacing and a calm premium feel. Your product and brand names create fresh website content each time.")
 
 if st.session_state.generated_html:
     st.divider()
