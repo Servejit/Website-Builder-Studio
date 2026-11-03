@@ -301,7 +301,16 @@ def make_html(product, brand, company, email, phone, address, whatsapp, instagra
         f'<figure class="gallery-card"><img src="{src}" alt="{p} product photograph {i+1}" loading="lazy"><figcaption>{p} · View {i+1}</figcaption></figure>'
         for i, src in enumerate(images)
     )
-    benefit_cards = "".join(f'<article class="info-card"><span class="number">0{i+1}</span><h3>{clean(x)}</h3><p>Thoughtfully considered for your everyday needs.</p></article>' for i, x in enumerate(c["benefits"]))
+    benefit_descriptions = [
+        "A practical point of value to consider when comparing your options.",
+        "A detail that can make the product more useful in your daily routine.",
+        "An option to match your personal preferences and intended use.",
+        "A reason to explore the product and decide whether it suits your needs.",
+    ]
+    benefit_cards = "".join(
+        f'<article class="info-card"><span class="number">0{i+1}</span><h3>{clean(x)}</h3><p>{clean(benefit_descriptions[i % len(benefit_descriptions)])}</p></article>'
+        for i, x in enumerate(c["benefits"])
+    )
     reasons = "".join(f"<li>{clean(x)}</li>" for x in c["reasons"])
     email_link = f"mailto:{clean(email)}" if email.strip() else "#contact"
     phone_link = "tel:" + re.sub(r"[^0-9+]", "", phone) if phone.strip() else "#contact"
@@ -399,7 +408,7 @@ body[data-design="future"] .hero-image{{border-radius:28px;box-shadow:0 0 0 1px 
 <header class="topbar"><div class="wrap"><nav><a class="logo" href="#home">{b}<span>.</span></a><div class="navlinks"><a href="#story">Our Story</a><a href="#benefits">Benefits</a><a href="#gallery">Gallery</a><a href="#faq">FAQ</a><a href="#contact">Contact</a></div><a class="button" href="#contact">Make an Enquiry</a></nav></div></header>
 <main>
 <div class="wrap hero" id="home"><div><div class="eyebrow">{clean(c['tagline'])}</div><h1>{clean(c['hero'])}</h1><p class="lead">{clean(c['subhero'])}</p><div class="hero-actions"><a class="button" href="#gallery">Explore {p}</a><a class="button button-outline" href="#contact">Talk to our team</a></div></div><div class="hero-image"><img src="{images[0]}" alt="{p} by {b}"></div></div>
-<section id="story"><div class="wrap split"><div><div class="eyebrow">{clean(c['story_label'])}</div><h2>{clean(c['hero'])}</h2><p class="body-copy">{clean(c['brand_story'])}</p><p class="body-copy">{clean(c['importance'])}</p></div><div class="quote-panel">“{clean(c['quote'])}”<p class="eyebrow">{b} · {clean(c['design_name'])}</p></div></div></section>
+<section id="story"><div class="wrap split"><div><div class="eyebrow">{clean(c['story_label'])}</div><h2>The idea behind {b}</h2><p class="body-copy">{clean(c['brand_story'])}</p><p class="body-copy">{clean(c['importance'])}</p></div><div class="quote-panel">“{clean(c['quote'])}”<p class="eyebrow">{b} · {clean(c['design_name'])}</p></div></div></section>
 <section id="benefits"><div class="wrap"><div class="section-head"><div class="eyebrow">The {b} difference</div><h2>Thoughtful reasons to choose {b}</h2><p>Explore the everyday value and practical benefits to consider when choosing your {p.lower()}.</p></div><div class="cards">{benefit_cards}</div></div></section>
 <section id="gallery"><div class="wrap"><div class="section-head"><div class="eyebrow">A closer look</div><h2>The {p} gallery</h2><p>Product photographs supplied for this brand presentation. Confirm the exact product, colour and model before ordering.</p></div><div class="gallery">{gallery}</div></div></section>
 <section id="you"><div class="wrap split"><div class="fit-panel"><div class="eyebrow">Made to fit your life</div><h2>How {p} suits you</h2><p class="body-copy">{clean(c['fit'])}</p></div><div><div class="eyebrow">A considered decision</div><h2>Why consider buying from {b}?</h2><ul class="reasons">{reasons}</ul><p class="body-copy">{clean(c['care'])}</p><a class="button" href="#contact">Ask us before you buy</a></div></div></section>
