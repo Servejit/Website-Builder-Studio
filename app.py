@@ -270,7 +270,7 @@ body[data-design="luxury"] .hero{{padding-top:125px;padding-bottom:115px}} body[
 body[data-design="future"] .hero-image{{border-radius:28px;box-shadow:0 0 0 1px var(--accent),0 24px 70px rgba(18,32,51,.16)}} body[data-design="future"] .info-card{{border-radius:20px;background:linear-gradient(145deg,var(--surface),var(--bg))}} body[data-design="future"] .button{{border-radius:999px}} body[data-design="future"] .quote-panel,body[data-design="future"] .fit-panel{{border-radius:28px}}
 @media(max-width:700px){{body[data-design] .hero{{grid-template-columns:1fr;padding-top:55px}}body[data-design="bold"] h1{{font-size:clamp(44px,13vw,68px)}}body[data-design="bold"] .hero-image{{transform:none}}}}
 </style></head>
-<body>
+<body data-design="{c['design_style']}">
 <header class="topbar"><div class="wrap"><nav><a class="logo" href="#home">{b}<span>.</span></a><div class="navlinks"><a href="#story">Our Story</a><a href="#benefits">Benefits</a><a href="#gallery">Gallery</a><a href="#faq">FAQ</a><a href="#contact">Contact</a></div><a class="button" href="#contact">Make an Enquiry</a></nav></div></header>
 <main>
 <div class="wrap hero" id="home"><div><div class="eyebrow">{clean(c['tagline'])}</div><h1>{clean(c['hero'])}</h1><p class="lead">{clean(c['subhero'])}</p><div class="hero-actions"><a class="button" href="#gallery">Explore {p}</a><a class="button button-outline" href="#contact">Talk to our team</a></div></div><div class="hero-image"><img src="{images[0]}" alt="{p} by {b}"></div></div>
