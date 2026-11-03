@@ -73,6 +73,13 @@ DEFAULT_CONTENT = {
 THEMES = {
 }
 
+DESIGN_DIRECTIONS = [
+    {"name":"Editorial / Heritage","style":"editorial","tagline":"A story worth discovering.","hero":"A more considered way to experience {product}.","subhero":"{brand} brings a thoughtful point of view to {product}, with character, detail and meaning.","story":"Every memorable brand begins with a point of view. {brand} sees {product} as more than an item to own: it is part of a personal ritual, a considered choice and a reflection of what matters to you.","quote":"Good design is what you feel, remember and return to.","label":"The art of thoughtful choice"},
+    {"name":"Bold / Avant-Garde","style":"bold","tagline":"Made to make a statement.","hero":"{product}. Without the ordinary.","subhero":"Meet the {brand} perspective: confident, expressive and made for people who set the pace.","story":"The world does not need another ordinary choice. {brand} is for people who bring their own energy to every room, every plan and every possibility. {product} becomes an expression of that attitude.","quote":"Don't blend into the moment. Give it a point of view.","label":"A different kind of confidence"},
+    {"name":"Organic / Human","style":"organic","tagline":"Thoughtfully made for real life.","hero":"Bring more meaning to every day.","subhero":"{brand} celebrates the everyday moments around {product}—the routines, connections and small details that make life your own.","story":"The best things fit naturally into real life. {brand} starts with people: what they value, how they spend their days and the little details that make a difference. That is the spirit behind our approach to {product}.","quote":"A meaningful everyday experience is built from thoughtful little details.","label":"Designed around real life"},
+    {"name":"Luxury / Minimal","style":"luxury","tagline":"Less noise. More intention.","hero":"The quiet confidence of {product}.","subhero":"Discover the understated {brand} approach: clarity, considered details and a refined perspective on the things you choose.","story":"True refinement does not need to compete for attention. It is found in considered decisions, clear purpose and details that feel right. {brand} brings that quieter perspective to {product}.","quote":"When every detail has a purpose, simplicity becomes its own signature.","label":"The signature of simplicity"},
+    {"name":"Future / Digital","style":"future","tagline":"A fresh perspective starts here.","hero":"Rethink what {product} can mean.","subhero":"{brand} looks at {product} through a fresh lens—where useful ideas, modern living and individual expression meet.","story":"New expectations create room for better experiences. {brand} is built around curiosity, practical thinking and the belief that the next chapter of {product} should feel relevant to the way people live now.","quote":"The future belongs to ideas that make a real difference today.","label":"A fresh point of view"},
+]
 
 
 def readable_text_color(hex_color):
@@ -135,9 +142,8 @@ def image_to_data_url(upload):
     return f"data:{mime};base64,{base64.b64encode(raw).decode('ascii')}"
 
 
-def build_copy(product, brand, company):
-    p = product.strip()
-    b = brand.strip()
+def build_copy(product, brand, company, direction):
+    p, b = product.strip(), brand.strip()
     key = p.lower()
     data = next((v for k, v in CATEGORY_CONTENT.items() if k in key), None)
     if data is None:
@@ -145,12 +151,16 @@ def build_copy(product, brand, company):
         importance = data["importance"].format(product_lc=p.lower())
     else:
         importance = data["importance"]
-    company_name = company.strip() or b
     return {
-        "company": company_name,
-        "tagline": f"Thoughtfully chosen. Made for what matters.",
-        "hero": f"Make every moment count with {b}.",
-        "subhero": f"Discover {p} that brings purpose, personality and thoughtful design into your everyday life.",
+        "company": company.strip() or b,
+        "tagline": direction["tagline"],
+        "hero": direction["hero"].format(product=p, brand=b),
+        "subhero": direction["subhero"].format(product=p, brand=b),
+        "brand_story": direction["story"].format(product=p, brand=b),
+        "quote": direction["quote"],
+        "story_label": direction["label"],
+        "design_name": direction["name"],
+        "design_style": direction["style"],
         "importance": importance,
         "benefits": data["benefits"],
         "fit": data["fit"],
@@ -159,9 +169,9 @@ def build_copy(product, brand, company):
     }
 
 
-def make_html(product, brand, company, email, phone, address, whatsapp, instagram, facebook, images, background_color, accent_color):
+def make_html(product, brand, company, email, phone, address, whatsapp, instagram, facebook, images, background_color, accent_color, direction):
     p, b = clean(product), clean(brand)
-    c = build_copy(product, brand, company)
+    c = build_copy(product, brand, company, direction)
     gallery = "".join(
         f'<figure class="gallery-card"><img src="{src}" alt="{p} product photograph {i+1}" loading="lazy"><figcaption>{p} · View {i+1}</figcaption></figure>'
         for i, src in enumerate(images)
@@ -252,12 +262,19 @@ footer{{padding:34px 0;border-top:1px solid var(--line);color:var(--muted);font-
 @media(max-width:900px){{.hero{{gap:34px}}.cards{{grid-template-columns:repeat(2,1fr)}}.navlinks{{gap:14px}}}}
 @media(max-width:700px){{.wrap{{width:calc(100% - 32px)}}nav{{min-height:68px}}.navlinks{{display:none}}.hero,.split,.contact-grid{{grid-template-columns:1fr}}.hero{{padding:56px 0 62px;gap:30px}}.hero-image{{height:340px}}section{{padding:62px 0}}.gallery{{grid-template-columns:1fr 1fr}}.gallery-card img{{height:230px}}.hero-actions .button{{flex:1}}}}
 @media(max-width:460px){{.cards,.gallery{{grid-template-columns:1fr}}.gallery-card img{{height:260px}}.hero-actions{{flex-direction:column}}.hero-actions .button{{width:100%}}}}
+/* Distinct creative systems: every generation changes more than the colour palette. */
+body[data-design="editorial"] .hero{{padding-top:105px;gap:7vw}} body[data-design="editorial"] h1,body[data-design="editorial"] h2{{font-family:Georgia,serif;font-weight:500;letter-spacing:-.045em}} body[data-design="editorial"] .hero-image{{border-radius:2px 110px 2px 2px}} body[data-design="editorial"] .info-card{{border-radius:2px;box-shadow:none}}
+body[data-design="bold"] h1{{font-size:clamp(52px,7vw,92px);font-weight:950;letter-spacing:-.075em;text-transform:uppercase;line-height:.94}} body[data-design="bold"] .hero-image{{border-radius:4px;transform:rotate(1.5deg);box-shadow:18px 18px 0 var(--accent)}} body[data-design="bold"] .button{{border-radius:2px;text-transform:uppercase;letter-spacing:.08em}} body[data-design="bold"] .info-card{{border-radius:4px;border-top:5px solid var(--accent)}}
+body[data-design="organic"] h1,body[data-design="organic"] h2{{font-family:Georgia,serif;font-weight:500}} body[data-design="organic"] .hero-image{{border-radius:48% 48% 18px 18px}} body[data-design="organic"] .quote-panel,body[data-design="organic"] .fit-panel{{border-radius:42px 12px 42px 12px}} body[data-design="organic"] .info-card{{border-radius:26px 8px 26px 8px}}
+body[data-design="luxury"] .hero{{padding-top:125px;padding-bottom:115px}} body[data-design="luxury"] h1{{font-family:Georgia,serif;font-weight:400;letter-spacing:-.055em}} body[data-design="luxury"] .hero-image{{border-radius:0;box-shadow:none}} body[data-design="luxury"] .info-card,body[data-design="luxury"] .quote-panel,body[data-design="luxury"] .fit-panel{{border-radius:0;box-shadow:none}} body[data-design="luxury"] .button{{border-radius:0;letter-spacing:.1em;text-transform:uppercase;font-size:11px}}
+body[data-design="future"] .hero-image{{border-radius:28px;box-shadow:0 0 0 1px var(--accent),0 24px 70px rgba(18,32,51,.16)}} body[data-design="future"] .info-card{{border-radius:20px;background:linear-gradient(145deg,var(--surface),var(--bg))}} body[data-design="future"] .button{{border-radius:999px}} body[data-design="future"] .quote-panel,body[data-design="future"] .fit-panel{{border-radius:28px}}
+@media(max-width:700px){{body[data-design] .hero{{grid-template-columns:1fr;padding-top:55px}}body[data-design="bold"] h1{{font-size:clamp(44px,13vw,68px)}}body[data-design="bold"] .hero-image{{transform:none}}}}
 </style></head>
 <body>
 <header class="topbar"><div class="wrap"><nav><a class="logo" href="#home">{b}<span>.</span></a><div class="navlinks"><a href="#story">Our Story</a><a href="#benefits">Benefits</a><a href="#gallery">Gallery</a><a href="#faq">FAQ</a><a href="#contact">Contact</a></div><a class="button" href="#contact">Make an Enquiry</a></nav></div></header>
 <main>
 <div class="wrap hero" id="home"><div><div class="eyebrow">{clean(c['tagline'])}</div><h1>{clean(c['hero'])}</h1><p class="lead">{clean(c['subhero'])}</p><div class="hero-actions"><a class="button" href="#gallery">Explore {p}</a><a class="button button-outline" href="#contact">Talk to our team</a></div></div><div class="hero-image"><img src="{images[0]}" alt="{p} by {b}"></div></div>
-<section id="story"><div class="wrap split"><div><div class="eyebrow">More than a product</div><h2>Why {p} matters in everyday life</h2><p class="body-copy">{clean(c['importance'])}</p><p class="body-copy">At {b}, our purpose is to help you make a considered choice that feels relevant to your life, your priorities and your personal style.</p></div><div class="quote-panel">“The best choices are the ones that make everyday moments feel more meaningful.”<p class="eyebrow">The {b} point of view</p></div></div></section>
+<section id="story"><div class="wrap split"><div><div class="eyebrow">{clean(c['story_label'])}</div><h2>{clean(c['hero'])}</h2><p class="body-copy">{clean(c['brand_story'])}</p><p class="body-copy">{clean(c['importance'])}</p></div><div class="quote-panel">“{clean(c['quote'])}”<p class="eyebrow">{b} · {clean(c['design_name'])}</p></div></div></section>
 <section id="benefits"><div class="wrap"><div class="section-head"><div class="eyebrow">The {b} difference</div><h2>Thoughtful reasons to choose {b}</h2><p>Explore the everyday value and practical benefits to consider when choosing your {p.lower()}.</p></div><div class="cards">{benefit_cards}</div></div></section>
 <section id="gallery"><div class="wrap"><div class="section-head"><div class="eyebrow">A closer look</div><h2>The {p} gallery</h2><p>Product photographs supplied for this brand presentation. Confirm the exact product, colour and model before ordering.</p></div><div class="gallery">{gallery}</div></div></section>
 <section id="you"><div class="wrap split"><div class="fit-panel"><div class="eyebrow">Made to fit your life</div><h2>How {p} suits you</h2><p class="body-copy">{clean(c['fit'])}</p></div><div><div class="eyebrow">A considered decision</div><h2>Why consider buying from {b}?</h2><ul class="reasons">{reasons}</ul><p class="body-copy">{clean(c['care'])}</p><a class="button" href="#contact">Ask us before you buy</a></div></div></section>
@@ -303,7 +320,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="hero-title">Website Builder Studio ✦</div>', unsafe_allow_html=True)
-st.markdown('<p class="hero-sub">Two names in. A complete product and brand website out.</p>', unsafe_allow_html=True)
+st.markdown('<p class="hero-sub">Two words in. A fresh brand identity, story and website direction every time.</p>', unsafe_allow_html=True)
 st.caption("Professional responsive design • Custom brand colours • Standalone HTML export • No paid API required")
 
 with st.sidebar:
@@ -332,6 +349,8 @@ if "generated_html" not in st.session_state:
     st.session_state.generated_html = ""
 if "generated_key" not in st.session_state:
     st.session_state.generated_key = ""
+if "generation_count" not in st.session_state:
+    st.session_state.generation_count = 0
 
 left, right = st.columns([1.05, .95], gap="large")
 with left:
@@ -339,7 +358,7 @@ with left:
     st.markdown('<div class="panel"><b>Only two required fields</b><p class="small-muted">Product tells the builder what you sell. Brand tells it how to present your business. Company and contact details are optional and editable.</p></div>', unsafe_allow_html=True)
     st.write("")
     st.markdown("**Your website will include**")
-    features = ["Hero banner and brand message", "Product importance and lifestyle story", "Benefits, reasons to buy and customer fit", "3–5 image gallery", "About company and FAQ", "Contact details and consumer enquiry form", "Privacy and terms starter sections", "Mobile responsive layout and SEO metadata", "One consistent professional design with your chosen brand colours"]
+    features = ["Hero banner and brand message", "Product importance and lifestyle story", "Benefits, reasons to buy and customer fit", "3–5 image gallery", "About company and FAQ", "Contact details and consumer enquiry form", "Privacy and terms starter sections", "Mobile responsive layout and SEO metadata", "A rotating creative direction: editorial, bold, organic, luxury or future-inspired"]
     for item in features:
         st.markdown(f"✓ {item}")
     if len(uploads or []) > 5:
@@ -352,9 +371,11 @@ with left:
         while len(selected_images) < 3:
             selected_images.append(make_svg_placeholder(product, brand, len(selected_images) + 1))
         selected_images = selected_images[:5]
-        st.session_state.generated_html = make_html(product, brand, company, email, phone, address, whatsapp, instagram, facebook, selected_images, background_color, accent_color)
-        st.session_state.generated_key = f"{product.strip()}|{brand.strip()}"
-        st.success("Your website has been generated. Preview it and download the HTML below.")
+        direction = DESIGN_DIRECTIONS[st.session_state.generation_count % len(DESIGN_DIRECTIONS)]
+        st.session_state.generation_count += 1
+        st.session_state.generated_html = make_html(product, brand, company, email, phone, address, whatsapp, instagram, facebook, selected_images, background_color, accent_color, direction)
+        st.session_state.generated_key = f"{product.strip()}|{brand.strip()} · {direction['name']}"
+        st.success(f"Fresh creative direction generated: {direction['name']}. Generate again for a different impression.")
     if not can_build:
         st.caption("Enter both names and upload no more than five images to generate.")
 
@@ -362,7 +383,7 @@ with right:
     st.markdown("### What gets generated")
     st.markdown('<div class="panel"><div style="font-size:2rem;font-weight:800;color:#f4f7fb">Your brand. Your story.</div><p class="small-muted">One polished, consistent layout. Choose your own background and brand accent colours; text contrast is calculated automatically.</p></div>', unsafe_allow_html=True)
     st.write("")
-    st.info("The website uses one professional layout. Your selected background and accent colours are applied consistently to the preview and downloaded HTML.")
+    st.info("Every generation rotates through five distinct design directions. Story angle, typography, shapes, spacing and layout treatment change while your chosen colours and uploaded images are retained.")
 
 if st.session_state.generated_html:
     st.divider()
