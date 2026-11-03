@@ -2,6 +2,7 @@ import base64
 import html
 import json
 import re
+import random
 from datetime import datetime
 from io import BytesIO
 
@@ -142,7 +143,26 @@ def image_to_data_url(upload):
     return f"data:{mime};base64,{base64.b64encode(raw).decode('ascii')}"
 
 
+def detect_brand_personality(brand, product):
+    """Infer a lightweight brand personality from words; entirely local and editable."""
+    words = set(re.findall(r"[a-z]+", (brand + " " + product).lower()))
+    profiles = [
+        ("premium", {"luxury", "elite", "royal", "prestige", "gold", "signature", "prime", "imperial", "platinum"}),
+        ("modern", {"tech", "digital", "neo", "nova", "future", "smart", "cyber", "next", "byte"}),
+        ("natural", {"eco", "green", "earth", "organic", "nature", "pure", "flora", "root", "leaf"}),
+        ("energetic", {"power", "sport", "active", "flash", "bold", "turbo", "rapid", "force", "max"}),
+        ("creative", {"art", "studio", "craft", "design", "colour", "color", "urban", "unique", "creative"}),
+        ("trustworthy", {"trust", "care", "safe", "honest", "true", "reliable", "secure", "classic"}),
+    ]
+    scores = [(name, len(words & cues)) for name, cues in profiles]
+    best = max(scores, key=lambda item: item[1])
+    if best[1] == 0:
+        return random.choice(["confident", "thoughtful", "modern", "approachable"])
+    return best[0]
+
+
 def build_copy(product, brand, company, direction):
+    """Create varied brand copy from local word signals and modular story patterns."""
     p, b = product.strip(), brand.strip()
     key = p.lower()
     data = next((v for k, v in CATEGORY_CONTENT.items() if k in key), None)
@@ -151,14 +171,119 @@ def build_copy(product, brand, company, direction):
         importance = data["importance"].format(product_lc=p.lower())
     else:
         importance = data["importance"]
+
+    personality = detect_brand_personality(b, p)
+    audience_by_category = {
+        "watch": ["people who value personal style and punctuality", "professionals who appreciate considered details", "gift buyers marking an important moment"],
+        "shoe": ["people who are always on the move", "style-conscious everyday explorers", "customers balancing comfort and personal expression"],
+        "phone": ["connected creators and everyday problem-solvers", "people who work, learn and communicate on the move", "customers who compare practical technology choices"],
+        "bag": ["busy professionals and students", "frequent travellers and organised planners", "people who want function with personal style"],
+        "perfume": ["people who enjoy personal expression", "thoughtful gift-givers", "customers who choose details to match their mood"],
+        "clothing": ["people who use style to express themselves", "customers building a versatile wardrobe", "anyone who values comfort and individuality"],
+    }
+    category = next((k for k in CATEGORY_CONTENT if k in key), "general")
+    audiences = audience_by_category.get(category, [
+        "people who appreciate useful, well-considered choices",
+        "customers looking for products that fit their everyday lives",
+        "people who value individuality and practical details",
+    ])
+    audience = random.choice(audiences)
+
+    personality_language = {
+        "premium": ("refined", "considered details and understated confidence", "quietly distinctive"),
+        "modern": ("forward-looking", "fresh thinking and useful innovation", "ready for what comes next"),
+        "natural": ("grounded", "a more thoughtful connection with everyday life", "closer to what matters"),
+        "energetic": ("bold", "movement, confidence and expressive choices", "made to stand out"),
+        "creative": ("expressive", "individuality, imagination and original points of view", "never just another choice"),
+        "trustworthy": ("dependable", "clarity, care and confidence in the details", "a choice you can feel good about"),
+        "confident": ("confident", "personality and purpose in everyday choices", "comfortable being different"),
+        "thoughtful": ("thoughtful", "small details that make an everyday difference", "made with intention"),
+        "modern": ("modern", "fresh ideas for the way people live now", "in step with today"),
+        "approachable": ("approachable", "useful choices and a welcoming experience", "easy to make your own"),
+    }
+    adjective, values, signature = personality_language[personality]
+
+    story_openers = [
+        "{brand} began with a simple question: what should a better {product} experience feel like?",
+        "A product becomes meaningful when it fits into a real person's life. That belief shapes {brand}.",
+        "Everyday choices say something about us. {brand} brings a distinct point of view to {product}.",
+        "The idea behind {brand} is simple: make the experience of choosing {product} feel more considered.",
+        "There is always room to rethink the familiar. That is where the {brand} approach to {product} begins.",
+        "Behind every considered choice is a reason. For {brand}, that reason starts with people and their everyday needs.",
+    ]
+    story_middle = [
+        "Our perspective is shaped by {values}. We want {audience} to find an option that feels relevant, useful and personal.",
+        "We focus on {values}, with an experience intended for {audience}. The aim is not to follow every trend, but to make a choice feel right.",
+        "For {audience}, the details matter. Our approach brings together {values} and a clear sense of individual style.",
+        "That means thinking beyond the product itself: how it is discovered, how it fits a routine and what makes it memorable for {audience}.",
+        "We believe good choices should feel natural. By focusing on {values}, {brand} gives {audience} a fresh way to look at {product}.",
+    ]
+    story_endings = [
+        "That is the standard we want the {brand} name to represent: {signature}.",
+        "The result is a brand point of view that feels {adjective}, personal and grounded in real life.",
+        "Because the best choice is not simply noticed; it is the one that continues to feel right.",
+        "For us, {product} is the starting point. A better everyday experience is the bigger idea.",
+        "This is {brand}: a distinct perspective, built around the details people care about.",
+    ]
+    headlines = [
+        "A fresh point of view on {product}.",
+        "{product}, seen differently.",
+        "Make room for a more {adjective} choice.",
+        "The details make the difference.",
+        "Find your own way with {product}.",
+        "A better feeling starts with the right choice.",
+        "Bring a new perspective to the everyday.",
+        "Not just another {product}. Your kind of choice.",
+    ]
+    taglines = [
+        "A different point of view. The {brand} way.",
+        "Made for the way you choose.",
+        "More character in every detail.",
+        "Find what feels right.",
+        "Thoughtful choices. Distinctive living.",
+        "Your everyday, with a little more meaning.",
+        "A fresh take on the familiar.",
+        "Choose with confidence. Live with character.",
+    ]
+    subheroes = [
+        "{brand} brings a {adjective} perspective to {product}, shaped by {values}.",
+        "Discover {product} through the {brand} approach: {values}, personality and a focus on real life.",
+        "For {audience}, {brand} makes space for a more personal way to think about {product}.",
+        "A considered approach to {product}, created for people who want their choices to mean something.",
+        "Explore a distinctive take on {product}, where everyday usefulness meets individual expression.",
+    ]
+    quotes = [
+        "A good choice should feel right long after the first impression.",
+        "Distinctive is not about being louder. It is about knowing what matters.",
+        "The smallest details can shape the whole experience.",
+        "Make the everyday feel a little more your own.",
+        "A point of view is what turns a product into a brand.",
+        "Choose with purpose. Make it personal.",
+        "The best ideas begin by looking at familiar things differently.",
+    ]
+
+    values_text = values
+    fmt = {
+        "brand": b, "product": p, "audience": audience, "values": values_text,
+        "adjective": adjective, "signature": signature,
+    }
+    story = " ".join([
+        random.choice(story_openers).format(**fmt),
+        random.choice(story_middle).format(**fmt),
+        random.choice(story_endings).format(**fmt),
+    ])
+    hero = random.choice(headlines).format(**fmt)
+    subhero = random.choice(subheroes).format(**fmt)
+    tagline = random.choice(taglines).format(**fmt)
+    quote = random.choice(quotes)
     return {
         "company": company.strip() or b,
-        "tagline": direction["tagline"],
-        "hero": direction["hero"].format(product=p, brand=b),
-        "subhero": direction["subhero"].format(product=p, brand=b),
-        "brand_story": direction["story"].format(product=p, brand=b),
-        "quote": direction["quote"],
-        "story_label": direction["label"],
+        "tagline": tagline,
+        "hero": hero,
+        "subhero": subhero,
+        "brand_story": story,
+        "quote": quote,
+        "story_label": random.choice(["The thinking behind the brand", "A point of view with purpose", "The {brand} philosophy".format(**fmt), "More than the product", "Where our story begins"]),
         "design_name": direction["name"],
         "design_style": direction["style"],
         "importance": importance,
